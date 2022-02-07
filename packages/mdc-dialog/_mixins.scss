@@ -764,6 +764,51 @@
   }
 }
 
+@mixin position(
+  $top: null,
+  $right: null,
+  $bottom: null,
+  $left: null,
+  $query: feature-targeting.all()
+) {
+  $feat-structure: feature-targeting.create-target($query, structure);
+  @if ($top != null and $bottom != null) {
+    @error "Top and Botton properties can not be used simultaniously. Use " +
+           "`min-width`, `max-width` and `max-height` to controll dialog size.";
+  }
+  @if ($right != null and $left != null) {
+    @error "Right and Left properties can not be used simultaniously. Use " +
+           "`min-width`, `max-width` and `max-height` to controll dialog size.";
+  }
+
+  @include feature-targeting.targets($feat-structure) {
+    @if ($top != null) {
+      .mdc-dialog__container {
+        padding-top: $top;
+        align-items: flex-start;
+      }
+    }
+    @if ($bottom != null) {
+      .mdc-dialog__container {
+        padding-bottom: $bottom;
+        align-items: flex-end;
+      }
+    }
+    @if ($right != null) {
+      &.mdc-dialog {
+        justify-content: flex-end;
+        padding-right: $right;
+      }
+    }
+    @if ($left != null) {
+      &.mdc-dialog {
+        justify-content: flex-start;
+        padding-left: $left;
+      }
+    }
+  }
+}
+
 @mixin _fullscreen-dialog-size($query: feature-targeting.all()) {
   $feat-structure: feature-targeting.create-target($query, structure);
   .mdc-dialog__surface {

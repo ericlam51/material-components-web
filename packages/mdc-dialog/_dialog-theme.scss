@@ -38,6 +38,10 @@ $light-theme: (
   container-elevation: null,
   container-shadow-color: null,
   container-shape: null,
+  container-top: null,
+  container-right: null,
+  container-bottom: null,
+  container-left: null,
   with-divider-divider-color: null,
   with-divider-divider-height: null,
   with-icon-icon-size: null,
@@ -96,6 +100,12 @@ $custom-property-prefix: 'dialog';
     map.get($theme, container-shadow-color)
   );
   @include container-shape(map.get($theme, container-shape));
+  @include _container-position(
+    $top: map.get($theme, container-top),
+    $right: map.get($theme, container-right),
+    $bottom: map.get($theme, container-bottom),
+    $left: map.get($theme, container-left)
+  );
   @include _divider-color(map.get($theme, with-divider-divider-color));
   @include _divider-height(map.get($theme, with-divider-divider-height));
   @include _icon-size(map.get($theme, with-icon-icon-size));
@@ -167,6 +177,47 @@ $custom-property-prefix: 'dialog';
 @mixin container-shape($radius) {
   .mdc-dialog__surface {
     @include shape.radius($radius);
+  }
+}
+
+@mixin _container-position(
+  $top: null,
+  $right: null,
+  $bottom: null,
+  $left: null
+) {
+  @if ($top != null and $bottom != null) {
+    @error "Top and Botton properties can not be used simultaniously. Use " +
+           "`min-width`, `max-width` and `max-height` to controll dialog size.";
+  }
+  @if ($right != null and $left != null) {
+    @error "Right and Left properties can not be used simultaniously. Use " +
+           "`min-width`, `max-width` and `max-height` to controll dialog size.";
+  }
+
+  @if ($top != null) {
+    .mdc-dialog__container {
+      @include theme.property(padding-top, $top);
+      align-items: flex-start;
+    }
+  }
+  @if ($bottom != null) {
+    .mdc-dialog__container {
+      @include theme.property(padding-bottom, $bottom);
+      align-items: flex-end;
+    }
+  }
+  @if ($right != null) {
+    &.mdc-dialog {
+      justify-content: flex-end;
+      @include theme.property(padding-right, $right);
+    }
+  }
+  @if ($left != null) {
+    &.mdc-dialog {
+      justify-content: flex-start;
+      @include theme.property(padding-left, $left);
+    }
   }
 }
 
